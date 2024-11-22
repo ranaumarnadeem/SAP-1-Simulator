@@ -1,8 +1,6 @@
-#include <iostream>
-#include <string>
-#include <vector>
+#include "./Lib/headers.cpp"
+#include "./Lib/Utilites.cpp"
 
-using namespace std;
 
 int main(){
     
