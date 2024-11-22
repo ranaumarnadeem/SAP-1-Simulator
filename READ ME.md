@@ -73,7 +73,4 @@ Contains the core components of the SAP-1 simulator:
 - **Rana Umar Nadeem** ([@ranaumarnadeem](https://github.com/ranaumarnadeem))
 - **Muhammad Asad Naseem** ([@asad209999](https://github.com/asad209999))
 
----
 
-## **License**
-This project is licensed under the [MIT License](LICENSE).
