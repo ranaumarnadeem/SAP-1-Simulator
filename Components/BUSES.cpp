@@ -5,7 +5,7 @@ class DataBus
 {  
 public:
   //IT WILL BE CALLED BY THE ACCUMUALTOR AND INSTRUCTION REGISTER AND STORE IT IN THE ACCUMUALTOR AND THE INSTRUCTION REGISTER
-  // We jave taken the index as string so that we can use 8 bit address like for 1st location 00000000 and then used stoi function to convert it into integer in this case it would be 0 
+  // We Have taken the index as string so that we can use 8 bit address like for 1st location 00000000 and then used stoi function to convert it into integer in this case it would be 0 
   
   int getdata_Ram(RAM obj,string index )
   {
@@ -37,7 +37,8 @@ class AddressBus
   {
   	return obj.ProgramCounter;
   }
-  
+  //STOI COMMAND CONVERTS THE STRING TO INTEGER
+
   int getaddress_of_RAM(RAM obj,string index)
   {
   	return obj.ram[stoi(index)];
