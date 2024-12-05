@@ -1,0 +1,5 @@
+#include "../Components/ALU.cpp"
+#include "../Components/Control_Unit.cpp"
+#include "../Components/Register.cpp"
+#include "../Components/RAM.cpp"
+#include "../Components/BUS.cpp"
