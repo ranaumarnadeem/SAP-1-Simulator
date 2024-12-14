@@ -1,11 +1,8 @@
-
-// using single inheritance in order to access the data memerbs of control bus 
-
-class ControlUnit:public ControlBus
+class ControlUnit
 {
 	public:
 	
-	void Decode_Send_Instruction_Register(InstructionRegister& IR,ControlBus& obj)
+	void Decode_Send_Instruction_Register(Register& IR,ControlBus& obj,DataBus& dataBus, AddressBus& addressBus, RAM& ram, Register& AC,char op)
     {  
       // loop for 4 times as there are 4 instructions in the ram LDA,ADD/SUB,STA.
       for (int i=0;i<3;i++)
@@ -36,7 +33,7 @@ class ControlUnit:public ControlBus
         
         //CONTROL UNIT DECODING THE CONTENT OF THE INSTRUCTION REGISTER AND GENERATING SIGNAL ACCORDINGLY.
         
-    	if(IR.instrcutionregister=="00000000")
+    	if(IR.read()=="00000000")
     	{
     		// THIS INSTRUCTION MEANS TO BRING THE DATA INTO THE ACCUMULATOR.
     		
@@ -46,30 +43,47 @@ class ControlUnit:public ControlBus
     		obj.execute(dataBus,addressBus,ram, AC, IR,0,0,0,loadsignalAC,0,0,0);
 		}
 		
-		else if(IR.instrcutionregister=="00000001")
+		else if(IR.read()=="00000001")
     	{
     		// IF THE INSTRUCTION IS THIS IT MEANS TO ADD THE NUMBERS ONE IN THE ACCUMUALTOR AND ONE IN THE RAM 
     		
     		addsignal=1;
     		obj.execute(dataBus,addressBus,ram, AC, IR,0,0,0,0,0,0,0);
+    
 		}
 		
-		else if(IR.instrcutionregister=="00000010")
+		else if(IR.read()=="00000010")
     	{
     		// IF THE INSTRUCTION IS THIS IT MEANS TO SUBTRACT THE NUMBERS ONE IN THE ACCUMUALTOR AND ONE IN THE RAM.
     		subtractsignal=1;
     		obj.execute(dataBus,addressBus,ram, AC, IR,0,0,0,0,0,0,subtractsignal);
+    	
 		}
 		
-		 else if(IR.instrcutionregister=="00000011")
+		 else if(IR.read()=="00000011")
     	{
     		// THIS INSTRUCTION MEASN TO STORE THE RESULT STORED TEMPERORLIY IN THE ACCUMUALOTR IN THE RAM .
     		writesignalRAM=1;
     		obj.execute(dataBus,addressBus,ram, AC, IR,0,0,writesignalRAM,0,0,0,0);
 		}
 		
-		// INCREMENT THE PROGRAM COUNTER HERE 
-        
-	}
+		// UPDATING THE PROGRAM COUNTER WHICH WAS DECLARED AS A GLOBAL VARIABLE.
+		
+		if(i==1 && op=='+')
+		{
+		ProgramCounter=to_string(bitset<8>(1));
+        }
+         
+        else if (i==1 && op=='-')
+        {
+         ProgramCounter=to_string(bitset<8>(2));
+		}
+		
+		else 
+		{
+		ProgramCounter=to_string(bitset<8>(3));
+		}
+	
+		}
     }	
 };

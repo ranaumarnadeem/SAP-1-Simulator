@@ -1,9 +1,6 @@
 	#include "../Lib/headers.cpp"
 	#include "../Lib/Utilities.cpp"
-<<<<<<< HEAD
 	
-=======
->>>>>>> b96e1bc9b371025933d23663f54d4b4fd3320d6c
 	//global counter to keep track of the memory locations
 	const int counter_ram=0;
 
@@ -12,12 +9,10 @@ class RAM
 {
 	protected:
 	//  Array represents 16 memory regions of the ram in sap 1.
-<<<<<<< HEAD
+
 	string *ram = new string [MEMORY_SIZE];
 
-=======
 	string ram[MEMORY_SIZE];
->>>>>>> b96e1bc9b371025933d23663f54d4b4fd3320d6c
 
 	public:
 	// AT THE INDEX 0  4 5 THERE ARE INSTRUCTIONS NOT THE NUMBERS THAT WE WANT TO ADD OR THEIR RESULT 
@@ -74,7 +69,7 @@ void writeresult(string result)
     
     // HERE THE ADDRESS( THE INT *PTR VARIBALE) WILL COME FROM THE PROGRAM COUNTER (ADDRESS OF THE INSTRUCTION  AND STORE THE RETURN VALUE INSIDE THE INSTRUCTION REGISTER
     
-    int read(string index)
+    int read(string index) const
 	 {
 	 	
         if (stoi[index]<=index<= stoi[index]) 
