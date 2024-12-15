@@ -1,4 +1,5 @@
-#include "../Lib/headers.cpp"
+	#include "../Lib/components.cpp"
+		#include "../Lib/headers.hpp"
 class DataBus
 {  
 public:
