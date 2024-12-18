@@ -1,20 +1,24 @@
 #include "../Lib/headers.cpp"
+// MAKING THE PROGRAM COUNTER AS A GLOBAL STRING VARIABLE (STRING BECAUSE IT WILL STORE THE ADDRESS IN STRING FORMAT) AND GLOBAL SO THAT IT CAN BE ACCESSED BY EVERY FUNCTION THE WHERE NEEDED.
+//PROGRAM COUNTER IS STORING 00000000 AS ITS FIRST INSTRUCTION WHICH IS LDA ACCORDING TO THE OPCODE.
+string ProgramCounter="00000000";
 
 class Register {
 private:
-    uint8_t data; 
+	//CHANGED THE VARIABLE "data" FROM U_INT_8 TO STRING  DATA TYPE TO ENSURE UNIFORMITY THROUGHOUT THE PROGRAM.
+    string data; 
     bool enable;  // enable for read
     bool load;   // Load for writing in register
 
 public:
     
-    Register() : data(0), enable(false), load(false) {}
+    Register() : data(""), enable(false), load(false) {}
 
     
     ~Register() {}
 
     
-    void write(uint8_t value) {
+    void write(string value) {
         if (load) { 
             data = value;
         } else {
@@ -23,7 +27,7 @@ public:
     }
 
     // Read
-    uint8_t read() const {
+    string read() const {
         if (enable) { 
             return data;
         } else {
@@ -33,7 +37,7 @@ public:
 
     // Reset
     void reset() {
-        data = 0;
+        data = "";
         enable = false;
         load = false;
     }
@@ -48,3 +52,5 @@ public:
         load = state;
     }
 };
+
+\
