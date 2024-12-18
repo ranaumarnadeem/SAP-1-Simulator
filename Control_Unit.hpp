@@ -1,4 +1,4 @@
-	#include "../Lib/headers.hpp"
+	#include "headers.hpp"
 class ControlUnit
 {
 	public:

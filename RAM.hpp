@@ -1,5 +1,5 @@
-	#include "../Lib/headers.hpp"
-	#include "../Lib/Utilities.cpp"
+	#include "headers.hpp"
+	#include "Utilities.cpp"
 	
 	//global counter to keep track of the memory locations
 	const int counter_ram=0;
