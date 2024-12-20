@@ -8,5 +8,6 @@
 //#include "../Components/Register.cpp"
 //#include "../Components/RAM.cpp"
 #include <array>
+#include <bitset>
 
 using namespace std;

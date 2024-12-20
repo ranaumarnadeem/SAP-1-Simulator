@@ -2,7 +2,7 @@
 	#include "Utilities.cpp"
 	
 	//global counter to keep track of the memory locations
-	const int counter_ram=0;
+	static int counter_ram=0;
 
 class RAM
 
@@ -72,9 +72,9 @@ void writeresult(string result)
     int read(string index) const
 	 {
 	 	
-        if (stoi[index]<=index<= stoi[index]) 
+        if (stoi(index)<=index<= stoi(index)) 
 		{
-            return bitset<8>(ram[stoi(index));
+            return bitset<8>(ram[stoi(index)]);
         } 
 		else 
 		{
@@ -82,7 +82,7 @@ void writeresult(string result)
         }
     }
     	
-	}
+	
 	
 	// destructor to deallocate dyanmically allocated array.
 	
