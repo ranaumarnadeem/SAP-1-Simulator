@@ -24,7 +24,7 @@ class RAM
 	void writeData(int num1,char op ,int num2)
 	{
 	// Condition to check for the valid memory regions 
-	 if(counter<MEMORY_SIZE)
+	 if(counter_ram<MEMORY_SIZE)
 	 {
 	 	// DEMONSTARTING LDA INSTRUCTION (LOAD THE DATA FROM MEMORY THIS MEMORY TO THE ACCUMULATOR)
 	 	//bitset basically converts the decimal number to 8 bit binary number 
@@ -32,7 +32,7 @@ class RAM
 		ram[counter_ram]=bitset<8>(0).to_string();
 		counter_ram++;
 	 	ram[counter_ram]=bitset<8>(num1).to_string();
-	 	counter++;
+	 	counter_ram++;
 	 	ram[counter_ram]=bitset<8>(num2).to_string();
 	 	
 		if (op=='+')
@@ -72,9 +72,9 @@ void writeresult(string result)
     int read(string index) const
 	 {
 	 	
-        if (stoi(index)<=index<= stoi(index)) 
+		if (stoi(index) <= MEMORY_SIZE && stoi(index) >= 0) 
 		{
-            return bitset<8>(ram[stoi(index)]);
+			return static_cast<int>(bitset<8>(ram[stoi(index)]).to_ulong());
         } 
 		else 
 		{

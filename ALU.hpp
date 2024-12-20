@@ -1,5 +1,7 @@
 #include "headers.hpp"
 
+#include "Register.hpp"
+#include "RAM.hpp"
 class ALU {
 private:
     uint8_t result;    
