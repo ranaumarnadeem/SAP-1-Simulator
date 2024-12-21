@@ -2,7 +2,7 @@
 #include "components.cpp"
 #include "Utilities.cpp"
 
-int main() 
+int main()
 {
     ControlUnit CU;
     ControlBus controlbus;
@@ -18,7 +18,7 @@ int main()
     char op;
 
     cout << "===== SAP-1 SIMULATOR =====" << endl;
-    
+
     // Get user input for operands and operation
     cout << "Enter Operand 1 (0-255): ";
     cin >> op1;
@@ -31,13 +31,15 @@ int main()
 
     cout << "\nWriting Data to RAM..." << endl;
     ram.writeData(op1, op, op2);
-    cout << "Data successfully written to RAM!\n" << endl;
+    cout << "Data successfully written to RAM!\n"
+         << endl;
 
     cout << "\n===== FETCH INSTRUCTION =====" << endl;
     cout << "Program Counter (PC) initialized to 0" << endl;
 
     // Start instruction execution cycle
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++)
+    {
         cout << "\nCycle " << i + 1 << " STARTED:" << endl;
         cout << "Step 1: Address from PC loaded onto Address Bus." << endl;
         cout << "Step 2: RAM reads instruction from address and places it on Data Bus." << endl;
@@ -56,8 +58,10 @@ int main()
     cout << "\n===== FINAL RESULT =====" << endl;
     cout << "Result stored at RAM[5]: ";
     string result = ram.read(5);
-    cout << result << " (Decimal: " << stoi(result, nullptr, 2) << ")\n" << endl;
+    cout << result << " (Decimal: " << stoi(result, nullptr, 2) << ")\n"
+         << endl;
 
-    cout << "SAP-1 Simulation Complete!\n" << endl;
+    cout << "SAP-1 Simulation Complete!\n"
+         << endl;
     return 0;
 }
