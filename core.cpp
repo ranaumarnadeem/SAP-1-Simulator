@@ -2,21 +2,35 @@
 #include "components.cpp"
 #include "Utilities.cpp"
 
-int main() {
-    // Initialize components
-    InstructionRegister IR;
-    ControlBus controlBus;
-    Accumulator accumulator;
+int main() 
+{
+    ControlUnit CU;
+    ControlBus controlbus;
+    RAM ram;
+    AddressBus addressBus;
+    DataBus dataBus;
+    Register IR;
+    Register AC;
+    ALU alu;
 
-    // Example instruction to decode and execute
-    IR.loadInstruction("11001010"); // Example binary instruction
+    uint8_t op1;
+    uint8_t op2;
+    char op;
 
-    // Decode and send instruction
-    ControlUnit controlUnit;
-    controlUnit.Decode_Send_Instruction_Register(IR, controlBus);
+    cout << "PLEASE ENTER THE OPERAND 1" << endl;
+    cin >> op1;
 
-    // Read and display accumulator content
-    std::cout << "Accumulator content: " << toDecimal(toBinary(accumulator.read())) << std::endl;
+    cout << "PLEASE ENTER THE OPERAND 2" << endl;
+    cin >> op2;
+
+    cout << "PLEASE ENTER THE OPERATION YOU WANT TO PERFORM (+) OR (-)" << endl;
+    cin >> op;
+
+    ram.writeData(op1, op, op2);
+    
+    CU.Decode_Send_Instruction(dataBus, addressBus, controlbus, ram, AC, IR, alu, op);
 
     return 0;
 }
+
+
