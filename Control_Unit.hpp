@@ -1,3 +1,5 @@
+#pragma once
+
 #include "headers.hpp"
 #include "ALU.hpp"
 #include "Register.hpp"

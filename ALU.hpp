@@ -1,3 +1,6 @@
+#ifndef ALU_HPP
+#define ALU_HPP
+
 #include "headers.hpp"
 
 #include "Register.hpp"
@@ -19,3 +22,5 @@ public:
 };
 uint8_t ALU::result = 0;
 
+
+#endif
