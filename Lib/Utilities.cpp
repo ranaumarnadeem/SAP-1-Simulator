@@ -1,3 +1,4 @@
+#pragma once
 #include "./headers.hpp"
 #include <bitset>
 #define MEMORY_SIZE 16

@@ -5,6 +5,7 @@
 
 #include "Register.hpp"
 #include "RAM.hpp"
+
 class ALU {
 private:
     static uint8_t result;
