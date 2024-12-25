@@ -2,16 +2,26 @@
 	#include "headers.hpp"
 	#include "Utilities.cpp"
 	
-class RAM {
+class RAM 
+{
 protected:
     // Array represents 16 memory regions of the RAM in SAP 1.
     string* ram = new string[MEMORY_SIZE];
 
 public:
+	//constructor
+	RAM(){};
+	 // Destructor to deallocate dynamically allocated array.
+    ~RAM() {
+        delete[] ram;
+    }
+	
+
     // Function to write in the memory locations
     void writeData(int num1, char op, int num2) {
         // Condition to check for the valid memory regions 
-        if (counter_ram < MEMORY_SIZE) {
+        if (counter_ram < MEMORY_SIZE) 
+		{
             // DEMONSTRATING LDA INSTRUCTION (LOAD THE DATA FROM MEMORY TO THE ACCUMULATOR)
             ram[counter_ram] = bitset<8>(0).to_string();
             counter_ram++;
@@ -30,7 +40,8 @@ public:
                 ram[counter_ram] = bitset<8>(2).to_string();
                 counter_ram++;
             }
-            else {
+            else 
+			{
                 cout << "INVALID INSTRUCTION " << endl;
             }
 
@@ -48,17 +59,16 @@ public:
     string read(int index) const {
         if (index < 0 || index >= MEMORY_SIZE) {
             cout << "TRYING TO ACCESS INVALID MEMORY LOCATION" << endl;
+            cout << endl;
         }
         else {
             string temp = bitset<8>(index).to_string();
             cout << "THE CONTENT AT MEMORY LOCATION " << temp << " IS " << ram[index] << endl;
+            cout << endl;
             return ram[index];
         }
     }
 
-    // Destructor to deallocate dynamically allocated array.
-    ~RAM() {
-        delete[] ram;
-    }
 };
+
 

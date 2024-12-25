@@ -5,23 +5,26 @@
 
 #include "Register.hpp"
 #include "RAM.hpp"
-
 class ALU {
 private:
-    static uint8_t result;
+    static int result;
 
 public:
+	ALU(){};
+	~ALU(){};
     // addition
-    void add(uint8_t operand1, uint8_t operand2) {
+    int add(int operand1, int operand2) {
         result = operand1 + operand2;
+        return result;
     }
 
     // subtraction
-    void subtract(uint8_t operand1, uint8_t operand2) {
+    int subtract(int operand1, int operand2) {
         result = operand1 - operand2;
+        return result;
     }
 };
-uint8_t ALU::result = 0;
+int ALU::result = 0;
 
 
 #endif

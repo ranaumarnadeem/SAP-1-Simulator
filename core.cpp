@@ -2,7 +2,7 @@
 #include "components.cpp"
 #include "Utilities.cpp"
 
-int main()
+int main() 
 {
     ControlUnit CU;
     ControlBus controlbus;
@@ -13,55 +13,39 @@ int main()
     Register AC;
     ALU alu;
 
-    uint8_t op1;
-    uint8_t op2;
+    int op1;
+    int op2;
     char op;
 
-    cout << "===== SAP-1 SIMULATOR =====" << endl;
-
-    // Get user input for operands and operation
-    cout << "Enter Operand 1 (0-255): ";
+    cout << "PLEASE ENTER THE OPERAND 1" << endl;
     cin >> op1;
-
-    cout << "Enter Operand 2 (0-255): ";
+    
+    cout << "PLEASE ENTER THE OPERAND 2" << endl;
     cin >> op2;
-
-    cout << "Enter Operation (+ or -): ";
+    
+    cout << "PLEASE ENTER THE OPERATION YOU WANT TO PERFORM (+) OR (-)" << endl;
     cin >> op;
-
-    cout << "\nWriting Data to RAM..." << endl;
-    ram.writeData(op1, op, op2);
-    cout << "Data successfully written to RAM!\n"
-         << endl;
-
-    cout << "\n===== FETCH INSTRUCTION =====" << endl;
-    cout << "Program Counter (PC) initialized to 0" << endl;
-
-    // Start instruction execution cycle
-    for (int i = 0; i < 3; i++)
+    
+    try 
     {
-        cout << "\nCycle " << i + 1 << " STARTED:" << endl;
-        cout << "Step 1: Address from PC loaded onto Address Bus." << endl;
-        cout << "Step 2: RAM reads instruction from address and places it on Data Bus." << endl;
-        cout << "Step 3: Data Bus transfers instruction to Instruction Register (IR)." << endl;
-        CU.Decode_Send_Instruction(dataBus, addressBus, controlbus, ram, AC, IR, alu, op);
-        cout << "Step 4: IR decodes instruction and sends control signals." << endl;
-        cout << "Step 5: Operand fetched from RAM into AC (if required)." << endl;
-        cout << "Step 6: ALU performs operation, result placed in AC." << endl;
-        cout << "Step 7: Result stored in RAM at specified address." << endl;
-        cout << "Cycle " << i + 1 << " COMPLETED." << endl;
-        cout << "Instruction Register (IR) contains: " << IR.read() << endl;
-        cout << "Accumulator (AC) contains: " << AC.read() << endl;
-    }
+     if( op1<0 || op>255 || op2<0||op2>255)
+		{
+			throw 0;
+		}
+	
+	}
+	
+	catch(int a)
+	{
+		cout << "CHECK YOUR OPERAND 1 AND OPERAND 2 IT MUST BE BETWEEN 0 AND 255 INCLUSIVE .... TERMINATING THE PROGRAM	" << endl;
+		return 0;
+	}
 
-    // Display results
-    cout << "\n===== FINAL RESULT =====" << endl;
-    cout << "Result stored at RAM[5]: ";
-    string result = ram.read(5);
-    cout << result << " (Decimal: " << stoi(result, nullptr, 2) << ")\n"
-         << endl;
-
-    cout << "SAP-1 Simulation Complete!\n"
-         << endl;
+    ram.writeData(op1, op, op2);
+    
+    CU.Decode_Send_Instruction(dataBus, addressBus, controlbus, ram, AC, IR, alu, op);
+     
     return 0;
 }
+
+

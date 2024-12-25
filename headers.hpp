@@ -13,6 +13,7 @@
 #include <array>
 #include <bitset>
 
+
 using namespace std;
 
 //global counter to keep track of the memory locations
