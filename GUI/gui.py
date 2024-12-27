@@ -86,72 +86,86 @@ def refresh_log():
     output_text.insert(tk.END, "Log refreshed.\n")  # Placeholder
 
 # Set up the main window
+# Set up the main window
 root = tk.Tk()
 root.title("SAP-1 Simulator")
-root.configure(bg="#87CEEB")  # Set background color to sky blue
+root.configure(bg="#808080")  # Changed to gray background
 
-# Make the window resizable
+# Configure grid weights for left and right sections
 root.rowconfigure(list(range(12)), weight=1)
-root.columnconfigure(list(range(2)), weight=1)
+root.columnconfigure(0, weight=1)  # Left side
+root.columnconfigure(1, weight=2)  # Right side (larger for output)
+
+# Create frames for left and right sections
+left_frame = tk.Frame(root, bg="#808080")
+left_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+right_frame = tk.Frame(root, bg="#808080")
+right_frame.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
 
 # Styling variables
 label_font = ("Arial", 12, "bold")
 entry_font = ("Arial", 12)
 text_font = ("Courier", 12)
-text_color = "white"
+text_color = "black"  # Changed to black for better visibility on gray
 
+# Left side - Input controls
 # Operand 1 input
-op1_label = tk.Label(root, text="Operand 1 (0-255):", font=label_font, bg="#87CEEB", fg=text_color)
-op1_label.grid(row=0, column=0, padx=10, pady=10, sticky="e")
-op1_entry = tk.Entry(root, font=entry_font)
-op1_entry.grid(row=0, column=1, padx=10, pady=10, sticky="w")
+op1_label = tk.Label(left_frame, text="Operand 1 (0-255):", font=label_font, bg="#808080", fg=text_color)
+op1_label.pack(pady=5, anchor="w")
+op1_entry = tk.Entry(left_frame, font=entry_font)
+op1_entry.pack(pady=5, fill="x")
 
 # Operand 2 input
-op2_label = tk.Label(root, text="Operand 2 (0-255):", font=label_font, bg="#87CEEB", fg=text_color)
-op2_label.grid(row=1, column=0, padx=10, pady=10, sticky="e")
-op2_entry = tk.Entry(root, font=entry_font)
-op2_entry.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+op2_label = tk.Label(left_frame, text="Operand 2 (0-255):", font=label_font, bg="#808080", fg=text_color)
+op2_label.pack(pady=5, anchor="w")
+op2_entry = tk.Entry(left_frame, font=entry_font)
+op2_entry.pack(pady=5, fill="x")
 
-# Operation input (dropdown)
-operation_label = tk.Label(root, text="Operation (+ or -):", font=label_font, bg="#87CEEB", fg=text_color)
-operation_label.grid(row=2, column=0, padx=10, pady=10, sticky="e")
+# Operation input
+operation_label = tk.Label(left_frame, text="Operation (+ or -):", font=label_font, bg="#808080", fg=text_color)
+operation_label.pack(pady=5, anchor="w")
 operation_var = tk.StringVar(value="+")
-operation_dropdown = tk.OptionMenu(root, operation_var, "+", "-")
-operation_dropdown.grid(row=2, column=1, padx=10, pady=10, sticky="w")
+operation_dropdown = tk.OptionMenu(left_frame, operation_var, "+", "-")
+operation_dropdown.pack(pady=5, fill="x")
 
-# Delay input (dropdown)
-delay_label = tk.Label(root, text="Delay (seconds):", font=label_font, bg="#87CEEB", fg=text_color)
-delay_label.grid(row=3, column=0, padx=10, pady=10, sticky="e")
+# Delay input
+delay_label = tk.Label(left_frame, text="Delay (seconds):", font=label_font, bg="#808080", fg=text_color)
+delay_label.pack(pady=5, anchor="w")
 delay_var = tk.StringVar(value="1")
-delay_dropdown = tk.OptionMenu(root, delay_var, "1", "2", "3", "4", "5")
-delay_dropdown.grid(row=3, column=1, padx=10, pady=10, sticky="w")
+delay_dropdown = tk.OptionMenu(left_frame, delay_var, "1", "2", "3", "4", "5")
+delay_dropdown.pack(pady=5, fill="x")
 
 # Start Button
-start_button = tk.Button(root, text="Start Simulation", font=label_font, command=start_simulation)
-start_button.grid(row=4, column=0, columnspan=2, pady=10)
+start_button = tk.Button(left_frame, text="Start Simulation", font=label_font, command=start_simulation)
+start_button.pack(pady=10)
 
-# Output Text Box (for simulation progress)
-output_label = tk.Label(root, text="Simulation Output:", font=label_font, bg="#87CEEB", fg=text_color)
-output_label.grid(row=5, column=0, padx=10, pady=10, sticky="w")
-output_text = tk.Text(root, height=15, font=text_font, fg=text_color, bg="black", wrap=tk.WORD)
-output_text.grid(row=6, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
-
-# Refresh Button (to clear and reload log)
-refresh_button = tk.Button(root, text="Refresh Log", font=label_font, command=refresh_log)
-refresh_button.grid(row=7, column=0, columnspan=2, pady=10)
+# Signal indicators frame
+signals_frame = tk.Frame(left_frame, bg="#808080")
+signals_frame.pack(pady=10, fill="x")
 
 # Signal indicators for RAM and Registers
-ram_write_label = tk.Label(root, text="RAM Write", bg="gray", width=15, height=2, font=label_font)
-ram_write_label.grid(row=8, column=0, padx=10, pady=10)
+ram_write_label = tk.Label(signals_frame, text="RAM Write", bg="gray", width=15, height=2, font=label_font)
+ram_write_label.pack(pady=5)
 
-ram_read_label = tk.Label(root, text="RAM Read", bg="gray", width=15, height=2, font=label_font)
-ram_read_label.grid(row=8, column=1, padx=10, pady=10)
+ram_read_label = tk.Label(signals_frame, text="RAM Read", bg="gray", width=15, height=2, font=label_font)
+ram_read_label.pack(pady=5)
 
-ir_label = tk.Label(root, text="IR", bg="gray", width=15, height=2, font=label_font)
-ir_label.grid(row=9, column=0, padx=10, pady=10)
+ir_label = tk.Label(signals_frame, text="IR", bg="gray", width=15, height=2, font=label_font)
+ir_label.pack(pady=5)
 
-ac_label = tk.Label(root, text="AC", bg="gray", width=15, height=2, font=label_font)
-ac_label.grid(row=9, column=1, padx=10, pady=10)
+ac_label = tk.Label(signals_frame, text="AC", bg="gray", width=15, height=2, font=label_font)
+ac_label.pack(pady=5)
+
+# Right side - Output terminal
+output_label = tk.Label(right_frame, text="Simulation Output:", font=label_font, bg="#808080", fg=text_color)
+output_label.pack(pady=5, anchor="w")
+
+output_text = tk.Text(right_frame, height=30, font=text_font, fg="white", bg="black", wrap=tk.WORD)
+output_text.pack(pady=5, fill="both", expand=True)
+
+# Refresh Button
+refresh_button = tk.Button(right_frame, text="Refresh Log", font=label_font, command=refresh_log)
+refresh_button.pack(pady=10)
 
 # Bind the Enter key to start the simulation
 root.bind("<Return>", start_simulation)
