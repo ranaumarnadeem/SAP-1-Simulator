@@ -1,174 +1,276 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 from subprocess import Popen, PIPE
+import datetime
 
-# Function to run the SAP-1 simulation (this would call your C++ program)
-def run_simulation(op1, op2, op):
-    try:
-        # Run the C++ program
-        process = Popen(["./core", str(op1), str(op2), op], stdout=PIPE, stderr=PIPE)
-        stdout, stderr = process.communicate()
-        return stdout.decode(), stderr.decode()
-    except FileNotFoundError:
-        return "", "Error: Executable not found. Ensure 'core' is in the same directory."
-    except Exception as e:
-        return "", f"An unexpected error occurred: {str(e)}"
-
-# Function to handle the start button click or Enter key press
-def start_simulation(event=None):  # Accept `event` for Enter key binding
-    try:
-        # Get input values
-        op1_input = op1_entry.get()
-        op2_input = op2_entry.get()
-        op = operation_var.get()
-
-        # Check if operands are numeric and within the valid range (0-255)
-        if not (op1_input.isdigit() and op2_input.isdigit()):
-            raise ValueError("Operands must be numeric values.")
+class SAP1Simulator:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("SAP-1 Simulator")
+        self.root.configure(bg="#808080")
         
-        op1 = int(op1_input)
-        op2 = int(op2_input)
+        # Set minimum window size
+        self.root.minsize(1000, 700)
+        
+        # Configure grid weights
+        self.root.rowconfigure(0, weight=20)  # Main content
+        self.root.rowconfigure(1, weight=1)   # Footer
+        self.root.columnconfigure(0, weight=1)
+        self.root.columnconfigure(1, weight=2)
 
-        if not (0 <= op1 <= 255 and 0 <= op2 <= 255):
-            raise ValueError("Operands must be between 0 and 255.")
+        # Create main frames
+        self.create_left_frame()
+        self.create_right_frame()
+        self.create_footer()
+        
+        # Initialize variables
+        self.operation_var = tk.StringVar(value="+")
+        self.delay_var = tk.StringVar(value="1")
+        
+        # Populate frames
+        self.setup_input_section()
+        self.setup_output_section()
+        self.setup_status_bar()
+        
+        # Bind keyboard shortcuts
+        self.setup_keyboard_shortcuts()
 
-        # Run the simulation and get the output
-        stdout, stderr = run_simulation(op1, op2, op)
+    def run_simulation(self, op1, op2, op):
+        try:
+            # Run the C++ program
+            process = Popen(["./core", str(op1), str(op2), op], stdout=PIPE, stderr=PIPE)
+            stdout, stderr = process.communicate()
+            return stdout.decode(), stderr.decode()
+        except FileNotFoundError:
+            return "", "Error: Executable not found. Ensure 'core' is in the same directory."
+        except Exception as e:
+            return "", f"An unexpected error occurred: {str(e)}"
 
-        if stderr:
-            messagebox.showerror("Error", f"Error occurred: {stderr}")
-        else:
-            # Display the process with signal updates
-            display_simulation_progress(stdout)
+    def start_simulation(self, event=None):
+        try:
+            # Get input values
+            op1_input = self.op1_entry.get()
+            op2_input = self.op2_entry.get()
+            op = self.operation_var.get()
 
-    except ValueError as e:
-        messagebox.showerror("Input Error", str(e))
+            # Check if operands are numeric and within the valid range (0-255)
+            if not (op1_input.isdigit() and op2_input.isdigit()):
+                raise ValueError("Operands must be numeric values.")
+            
+            op1 = int(op1_input)
+            op2 = int(op2_input)
 
-# Function to simulate progress with delays between steps
-def display_simulation_progress(output):
-    output_text.delete(1.0, tk.END)  # Clear previous text
-    delay_time = int(delay_var.get()) * 1000  # Convert to milliseconds
+            if not (0 <= op1 <= 255 and 0 <= op2 <= 255):
+                raise ValueError("Operands must be between 0 and 255.")
 
-    # Step 1: Data written to RAM
-    output_text.insert(tk.END, "Writing data to RAM...\n")
-    toggle_signal(ram_write_label, "green", delay_time)
-    root.after(delay_time, lambda: update_log("Data successfully written to RAM.\n"))
+            # Run the simulation and get the output
+            stdout, stderr = self.run_simulation(op1, op2, op)
 
-    # Step 2: Data read from RAM
-    root.after(2 * delay_time, lambda: toggle_signal(ram_read_label, "red", delay_time))
-    root.after(2 * delay_time, lambda: update_log("Reading data from RAM...\n"))
-    root.after(3 * delay_time, lambda: update_log("Data successfully read from RAM.\n"))
+            if stderr:
+                messagebox.showerror("Error", f"Error occurred: {stderr}")
+            else:
+                # Display the process with signal updates
+                self.display_simulation_progress(stdout)
 
-    # Step 3: Instruction Register active
-    root.after(4 * delay_time, lambda: toggle_signal(ir_label, "blue", delay_time))
-    root.after(4 * delay_time, lambda: update_log("Instruction loaded into IR...\n"))
+        except ValueError as e:
+            messagebox.showerror("Input Error", str(e))
 
-    # Step 4: Accumulator active
-    root.after(5 * delay_time, lambda: toggle_signal(ac_label, "yellow", delay_time))
-    root.after(5 * delay_time, lambda: update_log("Result stored in Accumulator.\n"))
+    def display_simulation_progress(self, output):
+        self.output_text.delete(1.0, tk.END)  # Clear previous text
+        delay_time = int(self.delay_var.get()) * 1000  # Convert to milliseconds
 
-    # Final Step: Display program output
-    root.after(6 * delay_time, lambda: update_log(f"Program Output:\n{output}"))
+        # Step 1: Data written to RAM
+        self.update_log("Writing data to RAM...\n")
+        self.toggle_signal("RAM Write", "green", delay_time)
+        self.root.after(delay_time, lambda: self.update_log("Data successfully written to RAM.\n"))
 
-# Helper function to toggle signals
-def toggle_signal(label, color, delay):
-    label.config(bg=color)
-    root.after(delay, lambda: label.config(bg="gray"))
+        # Step 2: Data read from RAM
+        self.root.after(2 * delay_time, lambda: self.toggle_signal("RAM Read", "red", delay_time))
+        self.root.after(2 * delay_time, lambda: self.update_log("Reading data from RAM...\n"))
+        self.root.after(3 * delay_time, lambda: self.update_log("Data successfully read from RAM.\n"))
 
-# Helper function to update the log with new text
-def update_log(message):
-    output_text.insert(tk.END, message)
-    output_text.see(tk.END)  # Auto-scroll to the bottom
+        # Step 3: Instruction Register active
+        self.root.after(4 * delay_time, lambda: self.toggle_signal("IR", "blue", delay_time))
+        self.root.after(4 * delay_time, lambda: self.update_log("Instruction loaded into IR...\n"))
 
-# Function to refresh the command log
-def refresh_log():
-    output_text.delete(1.0, tk.END)  # Clear previous text
-    output_text.insert(tk.END, "Log refreshed.\n")  # Placeholder
+        # Step 4: Accumulator active
+        self.root.after(5 * delay_time, lambda: self.toggle_signal("AC", "yellow", delay_time))
+        self.root.after(5 * delay_time, lambda: self.update_log("Result stored in Accumulator.\n"))
 
-# Set up the main window
-# Set up the main window
-root = tk.Tk()
-root.title("SAP-1 Simulator")
-root.configure(bg="#808080")  # Changed to gray background
+        # Final Step: Display program output
+        self.root.after(6 * delay_time, lambda: self.update_log(f"Program Output:\n{output}"))
 
-# Configure grid weights for left and right sections
-root.rowconfigure(list(range(12)), weight=1)
-root.columnconfigure(0, weight=1)  # Left side
-root.columnconfigure(1, weight=2)  # Right side (larger for output)
+    def toggle_signal(self, signal_name, color, delay):
+        self.signals[signal_name].config(fg=color)
+        self.root.after(delay, lambda: self.signals[signal_name].config(fg="gray"))
 
-# Create frames for left and right sections
-left_frame = tk.Frame(root, bg="#808080")
-left_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
-right_frame = tk.Frame(root, bg="#808080")
-right_frame.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
+    def update_log(self, message):
+        self.output_text.insert(tk.END, message)
+        self.output_text.see(tk.END)  # Auto-scroll to the bottom
+        self.update_status("Processing simulation...")
 
-# Styling variables
-label_font = ("Arial", 12, "bold")
-entry_font = ("Arial", 12)
-text_font = ("Courier", 12)
-text_color = "black"  # Changed to black for better visibility on gray
+    def create_left_frame(self):
+        self.left_frame = tk.Frame(self.root, bg="#808080", relief="ridge", bd=2)
+        self.left_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
 
-# Left side - Input controls
-# Operand 1 input
-op1_label = tk.Label(left_frame, text="Operand 1 (0-255):", font=label_font, bg="#808080", fg=text_color)
-op1_label.pack(pady=5, anchor="w")
-op1_entry = tk.Entry(left_frame, font=entry_font)
-op1_entry.pack(pady=5, fill="x")
+    def create_right_frame(self):
+        self.right_frame = tk.Frame(self.root, bg="#808080", relief="ridge", bd=2)
+        self.right_frame.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
 
-# Operand 2 input
-op2_label = tk.Label(left_frame, text="Operand 2 (0-255):", font=label_font, bg="#808080", fg=text_color)
-op2_label.pack(pady=5, anchor="w")
-op2_entry = tk.Entry(left_frame, font=entry_font)
-op2_entry.pack(pady=5, fill="x")
+    def create_footer(self):
+        footer_frame = tk.Frame(self.root, bg="#4a4a4a", height=30)
+        footer_frame.grid(row=1, column=0, columnspan=2, sticky="ew")
+        footer_frame.grid_propagate(False)
 
-# Operation input
-operation_label = tk.Label(left_frame, text="Operation (+ or -):", font=label_font, bg="#808080", fg=text_color)
-operation_label.pack(pady=5, anchor="w")
-operation_var = tk.StringVar(value="+")
-operation_dropdown = tk.OptionMenu(left_frame, operation_var, "+", "-")
-operation_dropdown.pack(pady=5, fill="x")
+        # Credits
+        credits_text = "Created by: Rana Umar Nadeem & Muhammad Asad Naseem"
+        credits_label = tk.Label(footer_frame, text=credits_text, 
+                               bg="#4a4a4a", fg="white", 
+                               font=("Arial", 10))
+        credits_label.pack(side="left", padx=10)
 
-# Delay input
-delay_label = tk.Label(left_frame, text="Delay (seconds):", font=label_font, bg="#808080", fg=text_color)
-delay_label.pack(pady=5, anchor="w")
-delay_var = tk.StringVar(value="1")
-delay_dropdown = tk.OptionMenu(left_frame, delay_var, "1", "2", "3", "4", "5")
-delay_dropdown.pack(pady=5, fill="x")
+        # Version and date
+        version_text = f"Version 1.0 | {datetime.datetime.now().strftime('%Y')}"
+        version_label = tk.Label(footer_frame, text=version_text,
+                               bg="#4a4a4a", fg="white",
+                               font=("Arial", 10))
+        version_label.pack(side="right", padx=10)
 
-# Start Button
-start_button = tk.Button(left_frame, text="Start Simulation", font=label_font, command=start_simulation)
-start_button.pack(pady=10)
+    def setup_input_section(self):
+        # Title for input section
+        title = tk.Label(self.left_frame, text="SAP-1 Control Panel",
+                        font=("Arial", 14, "bold"),
+                        bg="#808080", fg="#000000")
+        title.pack(pady=10)
 
-# Signal indicators frame
-signals_frame = tk.Frame(left_frame, bg="#808080")
-signals_frame.pack(pady=10, fill="x")
+        # Input frame with raised border
+        input_frame = tk.Frame(self.left_frame, bg="#909090", relief="raised", bd=2)
+        input_frame.pack(padx=10, pady=5, fill="x")
 
-# Signal indicators for RAM and Registers
-ram_write_label = tk.Label(signals_frame, text="RAM Write", bg="gray", width=15, height=2, font=label_font)
-ram_write_label.pack(pady=5)
+        # Operand inputs with validation
+        self.create_validated_entry(input_frame, "Operand 1 (0-255):", "op1_entry")
+        self.create_validated_entry(input_frame, "Operand 2 (0-255):", "op2_entry")
 
-ram_read_label = tk.Label(signals_frame, text="RAM Read", bg="gray", width=15, height=2, font=label_font)
-ram_read_label.pack(pady=5)
+        # Operation dropdown with improved styling
+        tk.Label(input_frame, text="Operation:", 
+                font=("Arial", 12, "bold"), 
+                bg="#909090").pack(pady=5, anchor="w")
+        operation_menu = ttk.OptionMenu(input_frame, self.operation_var, "+", "+", "-")
+        operation_menu.pack(pady=5, fill="x")
 
-ir_label = tk.Label(signals_frame, text="IR", bg="gray", width=15, height=2, font=label_font)
-ir_label.pack(pady=5)
+        # Delay selection with improved styling
+        tk.Label(input_frame, text="Delay (seconds):", 
+                font=("Arial", 12, "bold"), 
+                bg="#909090").pack(pady=5, anchor="w")
+        delay_menu = ttk.OptionMenu(input_frame, self.delay_var, "1", "1", "2", "3", "4", "5")
+        delay_menu.pack(pady=5, fill="x")
 
-ac_label = tk.Label(signals_frame, text="AC", bg="gray", width=15, height=2, font=label_font)
-ac_label.pack(pady=5)
+        # Start button with hover effect
+        start_button = tk.Button(input_frame, text="Start Simulation",
+                               font=("Arial", 12, "bold"),
+                               bg="#4CAF50", fg="white",
+                               activebackground="#45a049",
+                               command=self.start_simulation)
+        start_button.pack(pady=10, fill="x")
 
-# Right side - Output terminal
-output_label = tk.Label(right_frame, text="Simulation Output:", font=label_font, bg="#808080", fg=text_color)
-output_label.pack(pady=5, anchor="w")
+        # Signal indicators with improved styling
+        self.create_signal_indicators(input_frame)
 
-output_text = tk.Text(right_frame, height=30, font=text_font, fg="white", bg="black", wrap=tk.WORD)
-output_text.pack(pady=5, fill="both", expand=True)
+    def create_validated_entry(self, parent, label_text, entry_name):
+        tk.Label(parent, text=label_text,
+                font=("Arial", 12, "bold"),
+                bg="#909090").pack(pady=5, anchor="w")
+        entry = ttk.Entry(parent, font=("Arial", 12))
+        entry.pack(pady=5, fill="x")
+        setattr(self, entry_name, entry)
 
-# Refresh Button
-refresh_button = tk.Button(right_frame, text="Refresh Log", font=label_font, command=refresh_log)
-refresh_button.pack(pady=10)
+        # Add validation
+        vcmd = (self.root.register(self.validate_number), '%P')
+        entry.config(validate='key', validatecommand=vcmd)
 
-# Bind the Enter key to start the simulation
-root.bind("<Return>", start_simulation)
+    def create_signal_indicators(self, parent):
+        signals_frame = tk.LabelFrame(parent, text="System Status",
+                                    bg="#909090",
+                                    font=("Arial", 12, "bold"))
+        signals_frame.pack(pady=10, fill="x")
 
-# Start the Tkinter event loop
-root.mainloop()
+        # Create signal indicators with improved styling
+        self.signals = {}
+        for name in ["RAM Write", "RAM Read", "IR", "AC"]:
+            frame = tk.Frame(signals_frame, bg="#909090")
+            frame.pack(fill="x", pady=2)
+            
+            label = tk.Label(frame, text=name,
+                           font=("Arial", 10),
+                           bg="#909090")
+            label.pack(side="left", padx=5)
+            
+            indicator = tk.Label(frame, text="●",
+                               font=("Arial", 16),
+                               fg="gray",
+                               bg="#909090")
+            indicator.pack(side="right", padx=5)
+            
+            self.signals[name] = indicator
+
+    def setup_output_section(self):
+        # Title for output section
+        title = tk.Label(self.right_frame, text="Simulation Output",
+                        font=("Arial", 14, "bold"),
+                        bg="#808080", fg="#000000")
+        title.pack(pady=10)
+
+        # Output text with improved styling
+        self.output_text = tk.Text(self.right_frame,
+                                 font=("Courier", 12),
+                                 fg="white",
+                                 bg="#1e1e1e",
+                                 wrap=tk.WORD)
+        self.output_text.pack(padx=10, pady=5, fill="both", expand=True)
+
+        # Add scrollbar
+        scrollbar = ttk.Scrollbar(self.right_frame, orient="vertical",
+                                command=self.output_text.yview)
+        scrollbar.pack(side="right", fill="y")
+        self.output_text.configure(yscrollcommand=scrollbar.set)
+
+        # Refresh button with hover effect
+        refresh_button = tk.Button(self.right_frame, text="Clear Output",
+                                 font=("Arial", 12),
+                                 bg="#ff4444", fg="white",
+                                 activebackground="#cc0000",
+                                 command=self.refresh_log)
+        refresh_button.pack(pady=10)
+
+    def setup_status_bar(self):
+        self.status_var = tk.StringVar()
+        status_bar = tk.Label(self.root, textvariable=self.status_var,
+                            bd=1, relief=tk.SUNKEN, anchor=tk.W)
+        status_bar.grid(row=2, column=0, columnspan=2, sticky="ew")
+        self.update_status("Ready")
+
+    def setup_keyboard_shortcuts(self):
+        self.root.bind("<Return>", self.start_simulation)
+        self.root.bind("<Control-r>", lambda e: self.refresh_log())
+        self.root.bind("<Escape>", lambda e: self.root.quit())
+
+    def validate_number(self, value):
+        if value == "":
+            return True
+        try:
+            num = int(value)
+            return 0 <= num <= 255
+        except ValueError:
+            return False
+
+    def update_status(self, message):
+        self.status_var.set(message)
+
+    def refresh_log(self):
+        self.output_text.delete(1.0, tk.END)
+        self.update_status("Output cleared")
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = SAP1Simulator(root)
+    root.mainloop()
