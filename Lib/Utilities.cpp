@@ -1,4 +1,6 @@
+#pragma once
 #include "./headers.hpp"
+#include <bitset>
 #define MEMORY_SIZE 16
 
 string toBinary(uint8_t num, int bits = 8) {
