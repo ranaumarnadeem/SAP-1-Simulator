@@ -2,8 +2,17 @@
 #include "components.cpp"
 #include "Utilities.cpp"
 
-int main() 
+int main(int argc, char* argv[])
 {
+    if (argc != 4) {
+        std::cerr << "Usage: ./sap1_simulator <operand1> <operand2> <operation>" << std::endl;
+        return 1;
+    }
+
+    uint8_t op1 = std::stoi(argv[1]);
+    uint8_t op2 = std::stoi(argv[2]);
+    char op = argv[3][0]; // Assuming operation is passed as '+' or '-'
+    
     ControlUnit CU;
     ControlBus controlbus;
     RAM ram;
