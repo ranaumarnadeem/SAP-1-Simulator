@@ -1,12 +1,13 @@
 # **SAP-1 Simulator**
 
 ## **Overview**
-This project is a simulator for the SAP-1 (Simple As Possible) architecture implemented in C++. It simulates the core components of the SAP-1 computer, including memory, registers, control unit, and ALU, and provides output through a graphical interface (using Qt) and command-line interactions.
+This project is a simulator for the SAP-1 (Simple As Possible) architecture implemented in C++. It simulates the core components of the SAP-1 computer, including memory, registers, control unit, and ALU, and provides output through a graphical interface (using Tkinter) and command-line interactions.
 
 ---
 
 ## **Folder Structure**
-
+-Core.cpp contains all the backend files eg core,control unit etc all written in c++
+-Main contains gui.py that is frontend linked with backend
 
 ---
 
@@ -25,13 +26,13 @@ This project is a simulator for the SAP-1 (Simple As Possible) architecture impl
 ## **Dependencies**
 ### **System Requirements**
 - C++17 or later
-- Qt framework (for GUI)
+- Python3
 - Compiler: GCC, Clang, or MSVC
 
 ### **Libraries Used**
 - Standard C++ libraries (`<iostream>`, `<array>`, etc.)
 - Custom utility library (`utilities.cpp`)
-- Qt library for GUI.
+- Tkinter for GUI
 
 ---
 
@@ -41,31 +42,30 @@ This project is a simulator for the SAP-1 (Simple As Possible) architecture impl
    git clone https://github.com/yourusername/SAP-1-Simulator.git
    cd SAP-1-Simulator
 ## **Usage**
-1. Launch the program.
-2. Use the CLI to:
-   - Load programs into memory.
-   - Execute instructions step-by-step or continuously.
-3. View results in the GUI:
-   - Visualize memory, register states, and the control unit's operations.
+1. Launch the gui.py in folder Main.
+
+2. View results in the GUI:
+
 
 ---
 
 ## **Code Organization**
 
-### **Core File**
+### **Main File**
+- `gui.py in folder Main: Run it to see whole simulation
 - `core.cpp`: Initializes and orchestrates the simulator.
 
-### **Lib Folder**
-- `header.h`: Contains all required includes, such as standard headers and SAP-1 component headers.
+### **Supporting Files**
+- `header.hpp`: Contains all required includes, such as standard headers and SAP-1 component headers.
 - `utilities.cpp`: Includes constants like memory size, helper functions, and debugging utilities.
 
-### **Components Folder**
+### **Components **
 Contains the core components of the SAP-1 simulator:
-- **RAM.cpp**: Implements memory operations like `read()`, `write()`, and `reset()`.
-- **Control_Unit.cpp**: Encodes the fetch-decode-execute cycle.
-- **Register.cpp**: Implements basic registers (e.g., Accumulator, Instruction Register).
-- **BUS.cpp**: Manages data transfer between components.
-- **ALU.cpp**: Handles arithmetic and logic operations.
+- **RAM.hpp**: Implements memory operations like `read()`, `write()`, and `reset()`.
+- **Control_Unit.hpp**: Encodes the fetch-decode-execute cycle.
+- **Register.hpp**: Implements basic registers (e.g., Accumulator, Instruction Register).
+- **BUS.hpp**: Manages data transfer between components.
+- **ALU.hpp**: Handles arithmetic and logic operations.
 
 ---
 
