@@ -6,8 +6,8 @@ This project is a simulator for the SAP-1 (Simple As Possible) architecture impl
 ---
 
 ## **Folder Structure**
--Core.cpp contains all the backend files eg core,control unit etc all written in c++
--Main contains gui.py that is frontend linked with backend
+- Core.cpp contains all the backend files eg core,control unit etc all written in c++.
+- Main contains gui.py that is frontend linked with backend.
 
 ---
 
@@ -18,8 +18,9 @@ This project is a simulator for the SAP-1 (Simple As Possible) architecture impl
   - **Control Unit**: Manages the execution of instructions.
   - **ALU**: Performs basic arithmetic and logic operations.
   - **BUS**: Connects all components.
-- GUI for visualizing outputs (using Qt).
+- GUI for visualizing outputs (Tkinter).
 - Command-line interface (CLI) for interacting with the simulator.
+- Keyboard shortcuts has also been added press `Escape` to close Application, `Ctrl+R` to refresh and `Enter` to start simulation.
 
 ---
 
@@ -44,7 +45,7 @@ This project is a simulator for the SAP-1 (Simple As Possible) architecture impl
 ## **Usage**
 1. Launch the gui.py in folder Main.
 
-2. View results in the GUI:
+2. View results in the GUI
 
 
 ---
@@ -52,7 +53,7 @@ This project is a simulator for the SAP-1 (Simple As Possible) architecture impl
 ## **Code Organization**
 
 ### **Main File**
-- `gui.py in folder Main: Run it to see whole simulation
+- `gui.py` :Run it to see whole simulation
 - `core.cpp`: Initializes and orchestrates the simulator.
 
 ### **Supporting Files**
